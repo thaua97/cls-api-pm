@@ -1,0 +1,13 @@
+
+version: '3'
+
+services:
+  api-cls-pm-pg:
+    image: bitnami/postgresql:latest
+    container_name: api-cls-pm-pg
+    environment:
+      - POSTGRESQL_USERNAME=docker
+      - POSTGRESQL_PASSWORD=docker
+      - POSTGRESQL_DATABASE=apiclspm
+    ports:
+      - "5432:5432"

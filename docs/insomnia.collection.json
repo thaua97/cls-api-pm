@@ -1,0 +1,294 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-02-01T00:00:00.000Z",
+  "__export_source": "cascade",
+  "resources": [
+    {
+      "_id": "wrk_cls_pm",
+      "_type": "workspace",
+      "name": "CLS Project Manager API",
+      "description": "Insomnia workspace for api-cls-pm"
+    },
+    {
+      "_id": "env_cls_pm_base",
+      "_type": "environment",
+      "parentId": "wrk_cls_pm",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:3333",
+        "token": ""
+      }
+    },
+
+    {
+      "_id": "fld_health",
+      "_type": "request_group",
+      "parentId": "wrk_cls_pm",
+      "name": "Health"
+    },
+    {
+      "_id": "fld_users",
+      "_type": "request_group",
+      "parentId": "wrk_cls_pm",
+      "name": "Users"
+    },
+    {
+      "_id": "fld_auth",
+      "_type": "request_group",
+      "parentId": "wrk_cls_pm",
+      "name": "Auth"
+    },
+    {
+      "_id": "fld_projects",
+      "_type": "request_group",
+      "parentId": "wrk_cls_pm",
+      "name": "Projects (Protected)"
+    },
+
+    {
+      "_id": "req_health",
+      "_type": "request",
+      "parentId": "fld_health",
+      "name": "GET /health",
+      "method": "GET",
+      "url": "{{ _.base_url }}/health",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ]
+    },
+
+    {
+      "_id": "req_users_register",
+      "_type": "request",
+      "parentId": "fld_users",
+      "name": "POST /users (register)",
+      "method": "POST",
+      "url": "{{ _.base_url }}/users",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\"\n}"
+      }
+    },
+
+    {
+      "_id": "req_auth_login",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "POST /auth/login",
+      "method": "POST",
+      "url": "{{ _.base_url }}/auth/login",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\"\n}"
+      }
+    },
+
+    {
+      "_id": "req_projects_list",
+      "_type": "request",
+      "parentId": "fld_projects",
+      "name": "GET /projects",
+      "method": "GET",
+      "url": "{{ _.base_url }}/projects",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ]
+    },
+    {
+      "_id": "req_projects_list_favorites",
+      "_type": "request",
+      "parentId": "fld_projects",
+      "name": "GET /projects?favorites=true",
+      "method": "GET",
+      "url": "{{ _.base_url }}/projects?favorites=true",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ]
+    },
+    {
+      "_id": "req_projects_list_search",
+      "_type": "request",
+      "parentId": "fld_projects",
+      "name": "GET /projects?query=Pro",
+      "method": "GET",
+      "url": "{{ _.base_url }}/projects?query=Pro",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ]
+    },
+    {
+      "_id": "req_projects_list_sort",
+      "_type": "request",
+      "parentId": "fld_projects",
+      "name": "GET /projects?sort=endDate_asc",
+      "method": "GET",
+      "url": "{{ _.base_url }}/projects?sort=endDate_asc",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ]
+    },
+
+    {
+      "_id": "req_projects_get_by_id",
+      "_type": "request",
+      "parentId": "fld_projects",
+      "name": "GET /projects/:id",
+      "method": "GET",
+      "url": "{{ _.base_url }}/projects/{{ project_id }}",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ]
+    },
+
+    {
+      "_id": "req_projects_create",
+      "_type": "request",
+      "parentId": "fld_projects",
+      "name": "POST /projects",
+      "method": "POST",
+      "url": "{{ _.base_url }}/projects",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Accept",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Project A\",\n  \"description\": \"Optional\",\n  \"startDate\": \"2025-01-01\",\n  \"endDate\": \"2025-01-10\"\n}"
+      }
+    },
+
+    {
+      "_id": "req_projects_update",
+      "_type": "request",
+      "parentId": "fld_projects",
+      "name": "PUT /projects/:id",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/projects/{{ project_id }}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Accept",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"New name\",\n  \"description\": null,\n  \"startDate\": \"2025-02-01\",\n  \"endDate\": \"2025-02-10\",\n  \"isFavorite\": true\n}"
+      }
+    },
+
+    {
+      "_id": "req_projects_delete",
+      "_type": "request",
+      "parentId": "fld_projects",
+      "name": "DELETE /projects/:id",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/projects/{{ project_id }}",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ]
+    },
+
+    {
+      "_id": "req_projects_toggle_favorite",
+      "_type": "request",
+      "parentId": "fld_projects",
+      "name": "POST /projects/:id/favorite",
+      "method": "POST",
+      "url": "{{ _.base_url }}/projects/{{ project_id }}/favorite",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ]
+    }
+  ]
+}
