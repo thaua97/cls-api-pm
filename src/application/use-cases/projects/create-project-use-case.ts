@@ -8,7 +8,11 @@ interface CreateProjectUseCaseResponse {
 }
 
 export class CreateProjectUseCase {
-	constructor(private projectsRepository: ProjectRepository) {}
+	private projectsRepository: ProjectRepository;
+
+	constructor(projectsRepository: ProjectRepository) {
+		this.projectsRepository = projectsRepository;
+	}
 
 	async execute(
 		data: CreateProjectParams,

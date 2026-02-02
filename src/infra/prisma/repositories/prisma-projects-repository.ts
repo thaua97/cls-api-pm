@@ -22,13 +22,20 @@ function sortToOrderBy(sort: ProjectSort | undefined) {
 }
 
 export class PrismaProjectsRepository implements ProjectRepository {
-	async create(data: CreateProjectParams): Promise<Project> {
+	async create({
+		name,
+		client,
+		start_date,
+		end_date,
+		user_id,
+	}: CreateProjectParams): Promise<Project> {
 		return await prisma.project.create({
 			data: {
-				name: data.name,
-				description: data.description ?? null,
-				start_date: data.start_date,
-				end_date: data.end_date,
+				name,
+				client,
+				start_date,
+				end_date,
+				user_id,
 			},
 		});
 	}
@@ -44,8 +51,9 @@ export class PrismaProjectsRepository implements ProjectRepository {
 			where: { id },
 			data: {
 				...(data.name !== undefined ? { name: data.name } : {}),
-				...(data.description !== undefined
-					? { description: data.description }
+				...(data.client !== undefined ? { client: data.client } : {}),
+				...(data.background_path !== undefined
+					? { background_path: data.background_path }
 					: {}),
 				...(data.start_date !== undefined
 					? { start_date: data.start_date }
@@ -54,6 +62,7 @@ export class PrismaProjectsRepository implements ProjectRepository {
 				...(data.is_favorite !== undefined
 					? { is_favorite: data.is_favorite }
 					: {}),
+				...(data.user_id !== undefined ? { user_id: data.user_id } : {}),
 			},
 		});
 	}
@@ -64,23 +73,21 @@ export class PrismaProjectsRepository implements ProjectRepository {
 		});
 	}
 
-	async list(params: ListProjectsParams): Promise<Project[]> {
-		const where = {
-			...(params.favorites === true ? { is_favorite: true } : {}),
-			...(params.query
-				? {
-					OR: [
-						{ name: { contains: params.query, mode: 'insensitive' as const } },
-						{
-							description: {
-								contains: params.query,
-								mode: 'insensitive' as const,
-							},
-						},
-					],
-				}
-				: {}),
+	async list(userId: string, params: ListProjectsParams): Promise<Project[]> {
+		const where: Record<string, unknown> = {
+			user_id: userId,
 		};
+
+		if (params.favorites === true) {
+			where.is_favorite = true;
+		}
+
+		if (params.query) {
+			where.OR = [
+				{ name: { contains: params.query, mode: 'insensitive' as const } },
+				{ client: { contains: params.query, mode: 'insensitive' as const } },
+			];
+		}
 
 		return await prisma.project.findMany({
 			where,

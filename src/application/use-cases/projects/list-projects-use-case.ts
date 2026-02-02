@@ -10,9 +10,16 @@ interface ListProjectsUseCaseResponse {
 }
 
 export class ListProjectsUseCase {
-	constructor(private projectsRepository: ProjectRepository) {}
+	private projectsRepository: ProjectRepository;
 
-	async execute(params: ListProjectsParams): Promise<ListProjectsUseCaseResponse> {
+	constructor(projectsRepository: ProjectRepository) {
+		this.projectsRepository = projectsRepository;
+	}
+
+	async execute(
+		userId: string,
+		params: ListProjectsParams,
+	): Promise<ListProjectsUseCaseResponse> {
 		if (params.query && params.query.length < 3) {
 			throw new AppError({
 				statusCode: 400,
@@ -21,7 +28,7 @@ export class ListProjectsUseCase {
 			});
 		}
 
-		const projects = await this.projectsRepository.list(params);
+		const projects = await this.projectsRepository.list(userId, params);
 		return { projects };
 	}
 }

@@ -10,6 +10,7 @@ import { listProjects } from './controllers/projects/list-projects';
 import { updateProject } from './controllers/projects/update-project';
 import { deleteProject } from './controllers/projects/delete-project';
 import { toggleFavoriteProject } from './controllers/projects/toggle-favorite-project';
+import { uploadProjectBackground } from './controllers/projects/upload-project-background';
 
 export async function appRoutes(app: FastifyInstance) {
 	app.get('/health', health);
@@ -25,5 +26,6 @@ export async function appRoutes(app: FastifyInstance) {
 		privateRoutes.put('/projects/:id', updateProject);
 		privateRoutes.delete('/projects/:id', deleteProject);
 		privateRoutes.post('/projects/:id/favorite', toggleFavoriteProject);
+		privateRoutes.post('/projects/:id/background', uploadProjectBackground);
 	});
 }

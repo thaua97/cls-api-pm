@@ -9,7 +9,11 @@ interface ToggleFavoriteProjectUseCaseResponse {
 }
 
 export class ToggleFavoriteProjectUseCase {
-	constructor(private projectsRepository: ProjectRepository) {}
+	private projectsRepository: ProjectRepository;
+
+	constructor(projectsRepository: ProjectRepository) {
+		this.projectsRepository = projectsRepository;
+	}
 
 	async execute(id: string): Promise<ToggleFavoriteProjectUseCaseResponse> {
 		const project = await this.projectsRepository.findById(id);

@@ -1,9 +1,11 @@
 export interface Project {
 	id: string;
 	name: string;
-	description: string | null;
+	client: string;
+	background_path?: string | null;
 	start_date: Date;
 	end_date: Date;
+	user_id: string;
 	is_favorite: boolean;
 	created_at: Date;
 	updated_at: Date;
@@ -11,16 +13,19 @@ export interface Project {
 
 export interface CreateProjectParams {
 	name: string;
-	description?: string | null;
+	client: string;
 	start_date: Date;
 	end_date: Date;
+	user_id: string;
 }
 
 export interface UpdateProjectParams {
 	name?: string;
-	description?: string | null;
+	client?: string;
+	background_path?: string | null;
 	start_date?: Date;
 	end_date?: Date;
+	user_id?: string;
 	is_favorite?: boolean;
 }
 
@@ -37,5 +42,5 @@ export interface ProjectRepository {
 	findById(id: string): Promise<Project | null>;
 	update(id: string, data: UpdateProjectParams): Promise<Project>;
 	delete(id: string): Promise<void>;
-	list(params: ListProjectsParams): Promise<Project[]>;
+	list(userId: string, params: ListProjectsParams): Promise<Project[]>;
 }

@@ -5,21 +5,24 @@ import { PrismaProjectsRepository } from '@/infra/prisma/repositories/prisma-pro
 import { UpdateProjectUseCase } from '@/application/use-cases/projects/update-project-use-case';
 import { projectToHttp } from '@/application/mappers/project-to-http';
 
-export async function updateProject(request: FastifyRequest, reply: FastifyReply) {
+export async function updateProject(
+	request: FastifyRequest,
+	reply: FastifyReply,
+) {
 	const paramsSchema = z.object({
 		id: z.string().uuid(),
 	});
 
 	const bodySchema = z.object({
 		name: z.string().min(1).optional(),
-		description: z.string().optional().nullable(),
+		client: z.string().min(1).optional(),
 		startDate: z.coerce.date().optional(),
 		endDate: z.coerce.date().optional(),
 		isFavorite: z.boolean().optional(),
 	});
 
 	const { id } = paramsSchema.parse(request.params);
-	const { name, description, startDate, endDate, isFavorite } = bodySchema.parse(
+	const { name, client, startDate, endDate, isFavorite } = bodySchema.parse(
 		request.body,
 	);
 
@@ -28,7 +31,7 @@ export async function updateProject(request: FastifyRequest, reply: FastifyReply
 
 	const { project } = await useCase.execute(id, {
 		...(name !== undefined ? { name } : {}),
-		...(description !== undefined ? { description } : {}),
+		...(client !== undefined ? { client } : {}),
 		...(startDate !== undefined ? { start_date: startDate } : {}),
 		...(endDate !== undefined ? { end_date: endDate } : {}),
 		...(isFavorite !== undefined ? { is_favorite: isFavorite } : {}),

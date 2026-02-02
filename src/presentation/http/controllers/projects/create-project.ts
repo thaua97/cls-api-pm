@@ -4,24 +4,31 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { PrismaProjectsRepository } from '@/infra/prisma/repositories/prisma-projects-repository';
 import { CreateProjectUseCase } from '@/application/use-cases/projects/create-project-use-case';
 
-export async function createProject(request: FastifyRequest, reply: FastifyReply) {
+export async function createProject(
+	request: FastifyRequest,
+	reply: FastifyReply,
+) {
 	const bodySchema = z.object({
 		name: z.string().min(1),
-		description: z.string().optional().nullable(),
+		client: z.string().min(1),
+		userId: z.string().min(1),
 		startDate: z.coerce.date(),
 		endDate: z.coerce.date(),
 	});
 
-	const { name, description, startDate, endDate } = bodySchema.parse(request.body);
+	const { name, client, userId, startDate, endDate } = bodySchema.parse(
+		request.body,
+	);
 
 	const projectsRepository = new PrismaProjectsRepository();
 	const useCase = new CreateProjectUseCase(projectsRepository);
 
 	const { projectId } = await useCase.execute({
 		name,
-		description: description ?? null,
+		client,
 		start_date: startDate,
 		end_date: endDate,
+		user_id: userId,
 	});
 
 	return reply.status(201).send({ id: projectId });

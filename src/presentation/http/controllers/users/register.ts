@@ -16,7 +16,11 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
 	const usersRepository = new PrismaUsersRepository();
 	const registerUserUseCase = new RegisterUserUseCase(usersRepository);
 
-	const { userId } = await registerUserUseCase.execute({ name, email, password });
+	const { userId } = await registerUserUseCase.execute({
+		name,
+		email,
+		password,
+	});
 
 	return reply.status(201).send({ id: userId });
 }

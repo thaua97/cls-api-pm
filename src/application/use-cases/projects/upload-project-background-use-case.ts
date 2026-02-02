@@ -1,15 +1,14 @@
 import type {
 	Project,
 	ProjectRepository,
-	UpdateProjectParams,
 } from '@/domain/repositories/project-repository';
 import { NotFoundError } from '@/shared/errors/not-found-error';
 
-interface UpdateProjectUseCaseResponse {
+interface UploadProjectBackgroundUseCaseResponse {
 	project: Project;
 }
 
-export class UpdateProjectUseCase {
+export class UploadProjectBackgroundUseCase {
 	private projectsRepository: ProjectRepository;
 
 	constructor(projectsRepository: ProjectRepository) {
@@ -17,16 +16,19 @@ export class UpdateProjectUseCase {
 	}
 
 	async execute(
-		id: string,
-		data: UpdateProjectParams,
-	): Promise<UpdateProjectUseCaseResponse> {
-		const existing = await this.projectsRepository.findById(id);
+		projectId: string,
+		params: { background_path: string | null },
+	): Promise<UploadProjectBackgroundUseCaseResponse> {
+		const existing = await this.projectsRepository.findById(projectId);
 
 		if (!existing) {
 			throw new NotFoundError('Project not found');
 		}
 
-		const project = await this.projectsRepository.update(id, data);
+		const project = await this.projectsRepository.update(projectId, {
+			background_path: params.background_path,
+		});
+
 		return { project };
 	}
 }

@@ -5,7 +5,10 @@ import { PrismaProjectsRepository } from '@/infra/prisma/repositories/prisma-pro
 import { ListProjectsUseCase } from '@/application/use-cases/projects/list-projects-use-case';
 import { projectToHttp } from '@/application/mappers/project-to-http';
 
-export async function listProjects(request: FastifyRequest, reply: FastifyReply) {
+export async function listProjects(
+	request: FastifyRequest,
+	reply: FastifyReply,
+) {
 	const querySchema = z.object({
 		favorites: z
 			.union([z.literal('true'), z.literal('false')])
@@ -17,13 +20,19 @@ export async function listProjects(request: FastifyRequest, reply: FastifyReply)
 			.default('name_asc'),
 		query: z.string().optional(),
 	});
-
+	const userId = (request.user as { sub: string } | undefined)?.sub;
+	if (!userId) {
+		return reply.status(401).send({
+			code: 'UNAUTHORIZED',
+			message: 'Invalid token',
+		});
+	}
 	const { favorites, sort, query } = querySchema.parse(request.query);
 
 	const projectsRepository = new PrismaProjectsRepository();
 	const useCase = new ListProjectsUseCase(projectsRepository);
 
-	const { projects } = await useCase.execute({
+	const { projects } = await useCase.execute(userId, {
 		sort,
 		...(favorites !== undefined ? { favorites } : {}),
 		...(query !== undefined ? { query } : {}),

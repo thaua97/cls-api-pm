@@ -9,7 +9,11 @@ interface GetProjectUseCaseResponse {
 }
 
 export class GetProjectUseCase {
-	constructor(private projectsRepository: ProjectRepository) {}
+	private projectsRepository: ProjectRepository;
+
+	constructor(projectsRepository: ProjectRepository) {
+		this.projectsRepository = projectsRepository;
+	}
 
 	async execute(id: string): Promise<GetProjectUseCaseResponse> {
 		const project = await this.projectsRepository.findById(id);

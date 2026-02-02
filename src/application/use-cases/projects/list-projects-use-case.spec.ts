@@ -26,8 +26,8 @@ class InMemoryProjectsRepository implements ProjectRepository {
 		throw new Error('Not implemented');
 	}
 
-	async list(_params: ListProjectsParams): Promise<Project[]> {
-		return this.items;
+	async list(params: ListProjectsParams): Promise<Project[]> {
+		return params ? this.items : this.items;
 	}
 }
 
@@ -36,11 +36,11 @@ describe('ListProjectsUseCase', () => {
 		const projectsRepository = new InMemoryProjectsRepository();
 		const useCase = new ListProjectsUseCase(projectsRepository);
 
-		await expect(useCase.execute({ sort: 'name_asc', query: 'ab' })).rejects.toMatchObject(
-			{
-				statusCode: 400,
-				code: 'INVALID_QUERY',
-			},
-		);
+		await expect(
+			useCase.execute({ sort: 'name_asc', query: 'ab' }),
+		).rejects.toMatchObject({
+			statusCode: 400,
+			code: 'INVALID_QUERY',
+		});
 	});
 });

@@ -17,9 +17,10 @@ class InMemoryProjectsRepository implements ProjectRepository {
 		const project: Project = {
 			id: crypto.randomUUID(),
 			name: data.name,
-			description: data.description ?? null,
+			client: data.client,
 			start_date: data.start_date,
 			end_date: data.end_date,
+			user_id: data.user_id,
 			is_favorite: false,
 			created_at: now,
 			updated_at: now,
@@ -39,7 +40,9 @@ class InMemoryProjectsRepository implements ProjectRepository {
 
 		const updated: Project = {
 			...project,
-			...(data.is_favorite !== undefined ? { is_favorite: data.is_favorite } : {}),
+			...(data.is_favorite !== undefined
+				? { is_favorite: data.is_favorite }
+				: {}),
 			updated_at: new Date(),
 		};
 
@@ -51,8 +54,8 @@ class InMemoryProjectsRepository implements ProjectRepository {
 		throw new Error('Not implemented');
 	}
 
-	async list(_params: ListProjectsParams): Promise<Project[]> {
-		return this.items;
+	async list(params: ListProjectsParams): Promise<Project[]> {
+		return params ? this.items : this.items;
 	}
 }
 
@@ -63,8 +66,10 @@ describe('ToggleFavoriteProjectUseCase', () => {
 
 		const project = await projectsRepository.create({
 			name: 'P1',
+			client: 'Client 1',
 			start_date: new Date('2025-01-01'),
 			end_date: new Date('2025-01-10'),
+			user_id: 'user-1',
 		});
 
 		expect(project.is_favorite).toBe(false);
