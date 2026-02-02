@@ -125,9 +125,11 @@ Lista projetos.
     {
       "id": "<uuid>",
       "name": "Project A",
-      "description": "...",
+      "client": "Client A",
+      "backgroundUrl": null,
       "startDate": "2025-01-01T00:00:00.000Z",
       "endDate": "2025-01-10T00:00:00.000Z",
+      "userId": "<uuid>",
       "isFavorite": false,
       "createdAt": "2025-01-01T00:00:00.000Z",
       "updatedAt": "2025-01-01T00:00:00.000Z"
@@ -162,9 +164,11 @@ Busca um projeto por id.
   "project": {
     "id": "<uuid>",
     "name": "Project A",
-    "description": null,
+    "client": "Client A",
+    "backgroundUrl": null,
     "startDate": "2025-01-01T00:00:00.000Z",
     "endDate": "2025-01-10T00:00:00.000Z",
+    "userId": "<uuid>",
     "isFavorite": false,
     "createdAt": "2025-01-01T00:00:00.000Z",
     "updatedAt": "2025-01-01T00:00:00.000Z"
@@ -193,7 +197,8 @@ Cria um projeto.
 ```json
 {
   "name": "Project A",
-  "description": "Optional",
+  "client": "Client A",
+  "userId": "<uuid>",
   "startDate": "2025-01-01",
   "endDate": "2025-01-10"
 }
@@ -224,7 +229,7 @@ Atualiza um projeto.
 ```json
 {
   "name": "New name",
-  "description": null,
+  "client": "Client B",
   "startDate": "2025-02-01",
   "endDate": "2025-02-10",
   "isFavorite": true
@@ -238,9 +243,11 @@ Atualiza um projeto.
   "project": {
     "id": "<uuid>",
     "name": "New name",
-    "description": null,
+    "client": "Client B",
+    "backgroundUrl": null,
     "startDate": "2025-02-01T00:00:00.000Z",
     "endDate": "2025-02-10T00:00:00.000Z",
+    "userId": "<uuid>",
     "isFavorite": true,
     "createdAt": "2025-01-01T00:00:00.000Z",
     "updatedAt": "2025-01-02T00:00:00.000Z"
@@ -271,6 +278,49 @@ Remove um projeto.
 
 ---
 
+### `POST /projects/:id/background`
+
+Faz upload do background do projeto.
+
+- **Auth:** sim
+- **Params**
+  - `id`: UUID
+- **Body**
+
+`multipart/form-data` com o campo:
+
+- `file`: arquivo `.png` ou `.jpeg`
+
+- **Response 200**
+
+```json
+{
+  "project": {
+    "id": "<uuid>",
+    "name": "Project A",
+    "client": "Client A",
+    "backgroundUrl": "/uploads/projects/<uuid>/background.png",
+    "startDate": "2025-01-01T00:00:00.000Z",
+    "endDate": "2025-01-10T00:00:00.000Z",
+    "userId": "<uuid>",
+    "isFavorite": false,
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  }
+}
+```
+
+- **Response 400**
+
+```json
+{
+  "code": "BAD_REQUEST",
+  "message": "Invalid file type. Only PNG and JPEG are allowed"
+}
+```
+
+---
+
 ### `POST /projects/:id/favorite`
 
 Alterna o estado de favorito do projeto.
@@ -286,9 +336,11 @@ Alterna o estado de favorito do projeto.
   "project": {
     "id": "<uuid>",
     "name": "Project A",
-    "description": null,
+    "client": "Client A",
+    "backgroundUrl": null,
     "startDate": "2025-01-01T00:00:00.000Z",
     "endDate": "2025-01-10T00:00:00.000Z",
+    "userId": "<uuid>",
     "isFavorite": true,
     "createdAt": "2025-01-01T00:00:00.000Z",
     "updatedAt": "2025-01-01T00:00:00.000Z"

@@ -119,7 +119,7 @@ Pasta do projeto: `node-studies/api-cls-pm`
 **Fluxo Principal:**
 1. Cliente faz `GET /projects?query=...`
 2. API só aplica busca quando `query` tiver ao menos 3 caracteres
-3. API busca em campos relevantes (ex: `name`, `description`)
+3. API busca em campos relevantes (ex: `name`, `client`)
 
 **Fluxo Alternativo:**
 - Se `query` < 3 caracteres, API retorna erro de validação (`400`) ou ignora o filtro (definir comportamento padrão)
@@ -357,7 +357,8 @@ Campos sugeridos (ajustar conforme necessidade):
 
 - `id` (string/uuid)
 - `name` (string)
-- `description` (string opcional)
+- `client` (string)
+- `userId` (string/uuid)
 - `startDate` (string ISO)
 - `endDate` (string ISO)
 - `isFavorite` (boolean)

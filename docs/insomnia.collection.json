@@ -222,7 +222,7 @@
       ],
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"name\": \"Project A\",\n  \"description\": \"Optional\",\n  \"startDate\": \"2025-01-01\",\n  \"endDate\": \"2025-01-10\"\n}"
+        "text": "{\n  \"name\": \"Project A\",\n  \"client\": \"Client A\",\n  \"userId\": \"<uuid>\",\n  \"startDate\": \"2025-01-01\",\n  \"endDate\": \"2025-01-10\"\n}"
       }
     },
 
@@ -249,7 +249,7 @@
       ],
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"name\": \"New name\",\n  \"description\": null,\n  \"startDate\": \"2025-02-01\",\n  \"endDate\": \"2025-02-10\",\n  \"isFavorite\": true\n}"
+        "text": "{\n  \"name\": \"New name\",\n  \"client\": \"Client B\",\n  \"startDate\": \"2025-02-01\",\n  \"endDate\": \"2025-02-10\",\n  \"isFavorite\": true\n}"
       }
     },
 
@@ -270,6 +270,36 @@
           "value": "Bearer {{ _.token }}"
         }
       ]
+    },
+
+    {
+      "_id": "req_projects_upload_background",
+      "_type": "request",
+      "parentId": "fld_projects",
+      "name": "POST /projects/:id/background",
+      "method": "POST",
+      "url": "{{ _.base_url }}/projects/{{ project_id }}/background",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "body": {
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "id": "pair_background_file",
+            "name": "file",
+            "type": "file",
+            "fileName": ""
+          }
+        ]
+      }
     },
 
     {
