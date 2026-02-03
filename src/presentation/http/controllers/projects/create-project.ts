@@ -11,14 +11,19 @@ export async function createProject(
 	const bodySchema = z.object({
 		name: z.string().min(1),
 		client: z.string().min(1),
-		userId: z.string().min(1),
 		startDate: z.coerce.date(),
 		endDate: z.coerce.date(),
 	});
 
-	const { name, client, userId, startDate, endDate } = bodySchema.parse(
-		request.body,
-	);
+	const userId = (request.user as { sub: string } | undefined)?.sub;
+	if (!userId) {
+		return reply.status(401).send({
+			code: 'UNAUTHORIZED',
+			message: 'Invalid token',
+		});
+	}
+
+	const { name, client, startDate, endDate } = bodySchema.parse(request.body);
 
 	const projectsRepository = new PrismaProjectsRepository();
 	const useCase = new CreateProjectUseCase(projectsRepository);

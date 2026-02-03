@@ -6,6 +6,7 @@ const envSchema = z.object({
 	DATABASE_URL: z.string(),
 	JWT_SECRET: z.string().default('dev-secret'),
 	PORT: z.coerce.number().default(3333),
+	API_BASE_URL: z.string().default('http://localhost:3333'),
 });
 
 const _env = envSchema.safeParse(process.env);

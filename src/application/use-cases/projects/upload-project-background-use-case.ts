@@ -17,7 +17,7 @@ export class UploadProjectBackgroundUseCase {
 
 	async execute(
 		projectId: string,
-		params: { background_path: string | null },
+		params: { background_url: string | null },
 	): Promise<UploadProjectBackgroundUseCaseResponse> {
 		const existing = await this.projectsRepository.findById(projectId);
 
@@ -26,7 +26,7 @@ export class UploadProjectBackgroundUseCase {
 		}
 
 		const project = await this.projectsRepository.update(projectId, {
-			background_path: params.background_path,
+			background_url: params.background_url,
 		});
 
 		return { project };

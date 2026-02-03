@@ -1,9 +1,7 @@
 import { z } from 'zod';
 import type { FastifyReply, FastifyRequest } from 'fastify';
-import { createWriteStream } from 'node:fs';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { pipeline } from 'node:stream/promises';
 
 import { PrismaProjectsRepository } from '@/infra/prisma/repositories/prisma-projects-repository';
 import { UploadProjectBackgroundUseCase } from '@/application/use-cases/projects/upload-project-background-use-case';
@@ -39,13 +37,14 @@ export async function uploadProjectBackground(
 
 	await mkdir(path.dirname(absolutePath), { recursive: true });
 
-	await pipeline(file.file, createWriteStream(absolutePath));
+	const buffer = await file.toBuffer();
+	await writeFile(absolutePath, buffer);
 
 	const projectsRepository = new PrismaProjectsRepository();
 	const useCase = new UploadProjectBackgroundUseCase(projectsRepository);
 
 	const { project } = await useCase.execute(id, {
-		background_path: relativePath,
+		background_url: relativePath,
 	});
 
 	return reply.status(200).send({ project: projectToHttp(project) });

@@ -2,7 +2,7 @@ export interface Project {
 	id: string;
 	name: string;
 	client: string;
-	background_path?: string | null;
+	background_url?: string | null;
 	start_date: Date;
 	end_date: Date;
 	user_id: string;
@@ -22,7 +22,7 @@ export interface CreateProjectParams {
 export interface UpdateProjectParams {
 	name?: string;
 	client?: string;
-	background_path?: string | null;
+	background_url?: string | null;
 	start_date?: Date;
 	end_date?: Date;
 	user_id?: string;

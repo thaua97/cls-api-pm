@@ -1,4 +1,5 @@
 import type { Project } from '@/domain/repositories/project-repository';
+import { env } from '@/env';
 
 export interface ProjectHttpDTO {
 	id: string;
@@ -14,12 +15,14 @@ export interface ProjectHttpDTO {
 }
 
 export function projectToHttp(project: Project): ProjectHttpDTO {
+	const baseUrl = env.API_BASE_URL.replace(/\/$/, '');
+
 	return {
 		id: project.id,
 		name: project.name,
 		client: project.client,
-		backgroundUrl: project.background_path
-			? `/uploads/${project.background_path}`
+		backgroundUrl: project.background_url
+			? `${baseUrl}/uploads/${project.background_url}`
 			: null,
 		startDate: project.start_date.toISOString(),
 		endDate: project.end_date.toISOString(),
