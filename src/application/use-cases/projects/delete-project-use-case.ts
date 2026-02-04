@@ -8,13 +8,10 @@ export class DeleteProjectUseCase {
 		this.projectsRepository = projectsRepository;
 	}
 
-	async execute(id: string): Promise<void> {
-		const existing = await this.projectsRepository.findById(id);
-
-		if (!existing) {
+	async execute(userId: string, id: string): Promise<void> {
+		const deleted = await this.projectsRepository.deleteForUser(id, userId);
+		if (!deleted) {
 			throw new NotFoundError('Project not found');
 		}
-
-		await this.projectsRepository.delete(id);
 	}
 }

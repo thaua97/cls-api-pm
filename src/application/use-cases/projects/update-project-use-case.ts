@@ -17,16 +17,18 @@ export class UpdateProjectUseCase {
 	}
 
 	async execute(
+		userId: string,
 		id: string,
 		data: UpdateProjectParams,
 	): Promise<UpdateProjectUseCaseResponse> {
-		const existing = await this.projectsRepository.findById(id);
-
-		if (!existing) {
+		const project = await this.projectsRepository.updateForUser(
+			id,
+			userId,
+			data,
+		);
+		if (!project) {
 			throw new NotFoundError('Project not found');
 		}
-
-		const project = await this.projectsRepository.update(id, data);
 		return { project };
 	}
 }

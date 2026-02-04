@@ -40,7 +40,14 @@ export interface ListProjectsParams {
 export interface ProjectRepository {
 	create(data: CreateProjectParams): Promise<Project>;
 	findById(id: string): Promise<Project | null>;
+	findByIdForUser(id: string, userId: string): Promise<Project | null>;
 	update(id: string, data: UpdateProjectParams): Promise<Project>;
+	updateForUser(
+		id: string,
+		userId: string,
+		data: UpdateProjectParams,
+	): Promise<Project | null>;
 	delete(id: string): Promise<void>;
+	deleteForUser(id: string, userId: string): Promise<boolean>;
 	list(userId: string, params: ListProjectsParams): Promise<Project[]>;
 }

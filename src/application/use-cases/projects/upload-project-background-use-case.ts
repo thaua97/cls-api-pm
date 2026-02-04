@@ -16,18 +16,20 @@ export class UploadProjectBackgroundUseCase {
 	}
 
 	async execute(
+		userId: string,
 		projectId: string,
 		params: { background_url: string | null },
 	): Promise<UploadProjectBackgroundUseCaseResponse> {
-		const existing = await this.projectsRepository.findById(projectId);
-
-		if (!existing) {
+		const project = await this.projectsRepository.updateForUser(
+			projectId,
+			userId,
+			{
+				background_url: params.background_url,
+			},
+		);
+		if (!project) {
 			throw new NotFoundError('Project not found');
 		}
-
-		const project = await this.projectsRepository.update(projectId, {
-			background_url: params.background_url,
-		});
 
 		return { project };
 	}

@@ -76,6 +76,16 @@ export class PrismaProjectsRepository implements ProjectRepository {
 		return record ? toDomain(record) : null;
 	}
 
+	async findByIdForUser(id: string, userId: string): Promise<Project | null> {
+		const record = await prisma.project.findFirst({
+			where: {
+				id,
+				user_id: userId,
+			},
+		});
+		return record ? toDomain(record) : null;
+	}
+
 	async update(id: string, data: UpdateProjectParams): Promise<Project> {
 		const record = await prisma.project.update({
 			where: { id },
@@ -98,10 +108,59 @@ export class PrismaProjectsRepository implements ProjectRepository {
 		return toDomain(record);
 	}
 
+	async updateForUser(
+		id: string,
+		userId: string,
+		data: UpdateProjectParams,
+	): Promise<Project | null> {
+		const existing = await prisma.project.findFirst({
+			where: {
+				id,
+				user_id: userId,
+			},
+		});
+
+		if (!existing) {
+			return null;
+		}
+
+		const record = await prisma.project.update({
+			where: { id },
+			data: {
+				...(data.name !== undefined ? { name: data.name } : {}),
+				...(data.client !== undefined ? { client: data.client } : {}),
+				...(data.background_url !== undefined
+					? { background_path: data.background_url }
+					: {}),
+				...(data.start_date !== undefined
+					? { start_date: data.start_date }
+					: {}),
+				...(data.end_date !== undefined ? { end_date: data.end_date } : {}),
+				...(data.is_favorite !== undefined
+					? { is_favorite: data.is_favorite }
+					: {}),
+				...(data.user_id !== undefined ? { user_id: data.user_id } : {}),
+			},
+		});
+
+		return toDomain(record);
+	}
+
 	async delete(id: string): Promise<void> {
 		await prisma.project.delete({
 			where: { id },
 		});
+	}
+
+	async deleteForUser(id: string, userId: string): Promise<boolean> {
+		const result = await prisma.project.deleteMany({
+			where: {
+				id,
+				user_id: userId,
+			},
+		});
+
+		return result.count > 0;
 	}
 
 	async list(userId: string, params: ListProjectsParams): Promise<Project[]> {

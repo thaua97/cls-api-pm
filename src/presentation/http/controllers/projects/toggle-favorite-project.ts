@@ -14,11 +14,12 @@ export async function toggleFavoriteProject(
 	});
 
 	const { id } = paramsSchema.parse(request.params);
+	const userId = (request.user as { sub: string }).sub;
 
 	const projectsRepository = new PrismaProjectsRepository();
 	const useCase = new ToggleFavoriteProjectUseCase(projectsRepository);
 
-	const { project } = await useCase.execute(id);
+	const { project } = await useCase.execute(userId, id);
 
 	return reply.status(200).send({ project: projectToHttp(project) });
 }

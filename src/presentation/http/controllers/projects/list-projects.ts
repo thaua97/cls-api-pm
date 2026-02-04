@@ -20,13 +20,7 @@ export async function listProjects(
 			.default('name_asc'),
 		query: z.string().optional(),
 	});
-	const userId = (request.user as { sub: string } | undefined)?.sub;
-	if (!userId) {
-		return reply.status(401).send({
-			code: 'UNAUTHORIZED',
-			message: 'Invalid token',
-		});
-	}
+	const userId = (request.user as { sub: string }).sub;
 	const { favorites, sort, query } = querySchema.parse(request.query);
 
 	const projectsRepository = new PrismaProjectsRepository();

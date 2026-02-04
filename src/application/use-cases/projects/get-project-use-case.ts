@@ -15,8 +15,11 @@ export class GetProjectUseCase {
 		this.projectsRepository = projectsRepository;
 	}
 
-	async execute(id: string): Promise<GetProjectUseCaseResponse> {
-		const project = await this.projectsRepository.findById(id);
+	async execute(
+		userId: string,
+		id: string,
+	): Promise<GetProjectUseCaseResponse> {
+		const project = await this.projectsRepository.findByIdForUser(id, userId);
 
 		if (!project) {
 			throw new NotFoundError('Project not found');

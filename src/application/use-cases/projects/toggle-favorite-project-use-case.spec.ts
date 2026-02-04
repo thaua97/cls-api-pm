@@ -34,6 +34,12 @@ class InMemoryProjectsRepository implements ProjectRepository {
 		return this.items.find((p) => p.id === id) ?? null;
 	}
 
+	async findByIdForUser(id: string, userId: string): Promise<Project | null> {
+		const project = await this.findById(id);
+		if (!project) return null;
+		return project.user_id === userId ? project : null;
+	}
+
 	async update(id: string, data: UpdateProjectParams): Promise<Project> {
 		const project = await this.findById(id);
 		if (!project) throw new Error('Not found');
@@ -50,12 +56,31 @@ class InMemoryProjectsRepository implements ProjectRepository {
 		return updated;
 	}
 
+	async updateForUser(
+		id: string,
+		userId: string,
+		data: UpdateProjectParams,
+	): Promise<Project | null> {
+		const project = await this.findByIdForUser(id, userId);
+		if (!project) return null;
+		return this.update(id, data);
+	}
+
 	async delete(): Promise<void> {
 		throw new Error('Not implemented');
 	}
 
-	async list(params: ListProjectsParams): Promise<Project[]> {
-		return params ? this.items : this.items;
+	async deleteForUser(id: string, userId: string): Promise<boolean> {
+		const existing = await this.findByIdForUser(id, userId);
+		if (!existing) {
+			return false;
+		}
+		this.items = this.items.filter((p) => p.id !== id);
+		return true;
+	}
+
+	async list(userId: string, params: ListProjectsParams): Promise<Project[]> {
+		return userId && params ? this.items : this.items;
 	}
 }
 
@@ -74,10 +99,10 @@ describe('ToggleFavoriteProjectUseCase', () => {
 
 		expect(project.is_favorite).toBe(false);
 
-		const { project: updated1 } = await useCase.execute(project.id);
+		const { project: updated1 } = await useCase.execute('user-1', project.id);
 		expect(updated1.is_favorite).toBe(true);
 
-		const { project: updated2 } = await useCase.execute(project.id);
+		const { project: updated2 } = await useCase.execute('user-1', project.id);
 		expect(updated2.is_favorite).toBe(false);
 	});
 });

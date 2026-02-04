@@ -17,6 +17,7 @@ export async function uploadProjectBackground(
 	});
 
 	const { id } = paramsSchema.parse(request.params);
+	const userId = (request.user as { sub: string }).sub;
 
 	const file = await request.file();
 
@@ -43,7 +44,7 @@ export async function uploadProjectBackground(
 	const projectsRepository = new PrismaProjectsRepository();
 	const useCase = new UploadProjectBackgroundUseCase(projectsRepository);
 
-	const { project } = await useCase.execute(id, {
+	const { project } = await useCase.execute(userId, id, {
 		background_url: relativePath,
 	});
 

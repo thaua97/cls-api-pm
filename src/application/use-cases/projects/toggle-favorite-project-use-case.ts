@@ -15,16 +15,22 @@ export class ToggleFavoriteProjectUseCase {
 		this.projectsRepository = projectsRepository;
 	}
 
-	async execute(id: string): Promise<ToggleFavoriteProjectUseCaseResponse> {
-		const project = await this.projectsRepository.findById(id);
+	async execute(
+		userId: string,
+		id: string,
+	): Promise<ToggleFavoriteProjectUseCaseResponse> {
+		const project = await this.projectsRepository.findByIdForUser(id, userId);
 
 		if (!project) {
 			throw new NotFoundError('Project not found');
 		}
 
-		const updated = await this.projectsRepository.update(id, {
+		const updated = await this.projectsRepository.updateForUser(id, userId, {
 			is_favorite: !project.is_favorite,
 		});
+		if (!updated) {
+			throw new NotFoundError('Project not found');
+		}
 
 		return { project: updated };
 	}

@@ -15,13 +15,7 @@ export async function createProject(
 		endDate: z.coerce.date(),
 	});
 
-	const userId = (request.user as { sub: string } | undefined)?.sub;
-	if (!userId) {
-		return reply.status(401).send({
-			code: 'UNAUTHORIZED',
-			message: 'Invalid token',
-		});
-	}
+	const userId = (request.user as { sub: string }).sub;
 
 	const { name, client, startDate, endDate } = bodySchema.parse(request.body);
 
